@@ -6,9 +6,8 @@ when "debian"
 
   apt_repository "jenkins" do
     uri "http://pkg.jenkins-ci.org/debian"
-    distribution "binary/"
-    components [""]
     key "http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key"
+    components ["binary/"]
     action :add
   end
 
