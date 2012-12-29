@@ -29,6 +29,12 @@ end
 
 package "jenkins"
 
+template "/etc/default/jenkins" do
+  mode 00644
+  owner "root"
+  group "root"
+end
+
 service "jenkins" do
   action [:enable, :start]
 end
