@@ -1,5 +1,31 @@
 include_recipe "java"
 
+user node["jenkins"]["server"]["user"] do
+  home node["jenkins"]["server"]["home"]
+end
+
+directory node["jenkins"]["server"]["home"] do
+  recursive true
+  owner node["jenkins"]["server"]["user"]
+  group node["jenkins"]["server"]["group"]
+end
+
+directory "#{node['jenkins']['server']['home']}/plugins" do
+  owner node["jenkins"]["server"]["user"]
+  group node["jenkins"]["server"]["group"]
+  only_if { node["jenkins"]["server"]["plugins"].size > 0 }
+end
+
+node["jenkins"]["server"]["plugins"].each do |name|
+  remote_file "#{node['jenkins']['server']['home']}/plugins/#{name}.jpi" do
+    source "http://mirrors.jenkins-ci.org/plugins/#{name}/latest/#{name}.hpi"
+    backup false
+    owner node["jenkins"]["server"]["user"]
+    group node["jenkins"]["server"]["group"]
+    action :create_if_missing
+  end
+end
+
 case node["platform_family"]
 when "debian"
   include_recipe "apt"
